@@ -9,9 +9,8 @@ dc_orig_min = inf;
 % cleaned_orig_min = inf;
 score = [];
 
-for t=1:4
-    
-    shrink = (t-1)*2 + 1;
+for t=1:4    
+    shrink = (t-1)*5 + 1;
     
     dc_test_im = dc_test_im_orig(shrink:end-(shrink-1), shrink:end-(shrink-1));
     

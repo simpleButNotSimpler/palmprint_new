@@ -31,10 +31,10 @@ function [row, col, im_out] = crop_rotation(gray_im)
         end
         
         if stop
-            row(1) = row_start+1;
-            row(2) = row_end-1;            
-            col(1) = col_start+1;
-            col(2) = col_end-1;
+            row(1) = row_start+1+5;
+            row(2) = row_end-1-5;            
+            col(1) = col_start+1+5;
+            col(2) = col_end-1-5;
             im_out = gray_im(row(1):row(2), col(1):col(2));
             break
         end

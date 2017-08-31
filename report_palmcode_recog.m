@@ -1,7 +1,7 @@
 function report_palmcode_recog()
 total = 0;
-right_dp = zeros(1, 4);
-wrong_dp = right_dp;
+% right_dp = zeros(1, 4);
+% wrong_dp = right_dp;
 right_al = zeros(1, 1);
 wrong_al = right_al;
 
@@ -9,7 +9,7 @@ wrong_al = right_al;
 %parpool
 % parpool(4)
 
-for main_counter=1:100
+parfor main_counter=1:100
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -27,34 +27,35 @@ for main_counter=1:100
        current_im_name = testim(t).name;
         
        %get class (1xN array), same size as error
-       [dp] = report_score(current_im_name);
+       [al] = report_score(current_im_name);
        
        %classification
        %min indexes
-       [~, dp_min_idx] = min(dp);
-%        [~, al_min_idx] = min(al);
+%        [~, dp_min_idx] = min(dp);
+       [~, al_min_idx] = min(al);
        
        %verdicts
-       idx = (dp_min_idx == main_counter);
-       right_dp = right_dp + idx;
-       wrong_dp = wrong_dp + ~idx;
+%        idx = (dp_min_idx == main_counter);
+%        right_dp = right_dp + idx;
+%        wrong_dp = wrong_dp + ~idx;
+
+       idx = (al_min_idx == main_counter);
+       right_al = right_al + idx;
+       wrong_al = wrong_al + ~idx;
        
        if ~idx(1)
-          fid = fopen('mismatched_real_shrink.txt', 'a');
-          fprintf(fid, '%10s %3d \n', current_im_name, dp_min_idx(1));
+          fid = fopen('mismatched_aligned.txt', 'a');
+          fprintf(fid, '%10s %3d \n', current_im_name, al_min_idx(1));
           fclose(fid);
-       end
+       end      
        
-%        idx = (al_min_idx == main_counter);
-%        right_al = right_al + idx;
-%        wrong_al = wrong_al + ~idx;
        
        total = total + 1;
     end
  end
 
 %write result to file
-% fid = fopen('recog_palmcode_without_al.txt', 'w');
+fid = fopen('recog_palmcode_aligned.txt', 'w');
 % fprintf(fid, '%s \n%12s %20s %20s \n', 'DP', 'dc_orig_min', 'dc_palmregion_min', 'cleaned_orig_min');
 % fprintf(fid, '%12d %20d %20d\n', [right_dp, wrong_dp]);
 % 
@@ -67,11 +68,7 @@ for main_counter=1:100
 % fprintf(fid, '%s \n%12s %20s \n', 'DP', 'dc_orig_min', 'dc_palmregion_min');
 % fprintf(fid, '%12d %20d\n', [right_dp, wrong_dp]);
 
-fid = fopen('recog_palmcode_without_al.txt', 'w');
-fprintf(fid, '%s \n%5s %5s %5s %5s \n', 'shrink', 's1', 's2', 's3', 's4');
-fprintf(fid, '%5d %5d %5d %5d\n', [right_dp, wrong_dp]);
-
-fprintf(fid, '\n%s \n%8s\n', 'AL', 'cl_rot');
+fprintf(fid, '\n%s \n%8s\n', 'AL', 'dc_rot');
 fprintf(fid, '%8d\n', [right_al, wrong_al]);
 fprintf(fid, '\nTOTAL = %d\n', total);
 
@@ -82,26 +79,26 @@ disp('nou fini')
 end
 
 
-function [score] = report_score(im_test_name)
+function [al] = report_score(im_test_name)
    %image
    
    %test the image against all the database
-%    folder_cleaned = 'data\database\cleaned';
-   folder_dc = 'data\database\direction_code';
-   dp = zeros(500, 2) + inf;
-%    al = zeros(500, 1) + inf;
+   folder_cleaned = 'data\database\cleaned';
+%    folder_dc = 'data\database\direction_code';
+%    dp = zeros(500, 2) + inf;
+   al = zeros(500, 1) + inf;
    
    for t=1:500
        db_name = strcat('db', num2str(t),'_*.bmp');
-%        database_cleaned = dir(fullfile(folder_cleaned, db_name));
-       database_dc = dir(fullfile(folder_dc, db_name));
+       database_cleaned = dir(fullfile(folder_cleaned, db_name));
+%        database_dc = dir(fullfile(folder_dc, db_name));
        
        %get the score form direct palmcode 
 %        dp(t, :) = direct_palmcode(im_test_name, database_dc);
-       score(t, :) = direct_palmcode_shrink(im_test_name, database_dc);
+%        score(t, :) = direct_palmcode_shrink(im_test_name, database_dc);
        
        
        %get the score from aligned palmcode
-%        al(t, :) = aligned_palmcode(im_test_name, database_cleaned);
+       al(t) = aligned_palmcode(im_test_name, database_cleaned);
    end
 end

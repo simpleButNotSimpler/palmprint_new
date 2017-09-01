@@ -6,7 +6,7 @@ wrong_dp = right_dp;
 %parpool
 % parpool(4)
 
-parfor main_counter=1:100
+parfor main_counter=1:250
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -61,9 +61,9 @@ function [dp] = report_score(im_test_name)
    
    %test the image against all the database
    folder_dc = 'data\database\direction_code';
-   dp = zeros(100, 10) + inf;
+   dp = zeros(250, 15) + inf;
    
-   for t=1:100
+   for t=1:250
        db_name = strcat('db', num2str(t),'_*.bmp');
        database_dc = dir(fullfile(folder_dc, db_name));
        

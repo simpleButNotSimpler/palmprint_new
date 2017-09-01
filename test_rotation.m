@@ -63,6 +63,7 @@ subplot(2, 3, 3), imshowpair(dc_cropped_output, dc_cropped_db_im)
 %================= DIRECTION CODE IMAGE =======================
 %score original
 original = palmcode_diff(dc_test_im, dc_db_im)
+original_prime = palmcode_diff_prime(dc_test_im, dc_db_im)
 
 %score full rotated
 full_rotated = palmcode_diff(dc_output, dc_db_im)

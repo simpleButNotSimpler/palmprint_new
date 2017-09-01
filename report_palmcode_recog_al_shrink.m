@@ -44,7 +44,7 @@ parfor main_counter=1:20
  end
 
 %write result to file
-fid = fopen('report_palmcode_recog_al.txt', 'w');
+fid = fopen('report_palmcode_recog_al_shrink.txt', 'w');
 fprintf(fid, '%s\n', 'DP');
 fprintf(fid, '%4d %4d\n', [right_al; wrong_al]);
 fclose(fid);
@@ -156,8 +156,6 @@ if direction
    dc_db_name = dc_test_name;
    raw_test_name = fullfile('data\database\raw', db_im_name);
 end
-
-
 
 raw_test_im = read_image(raw_test_name);
 dc_db_im = read_image(dc_db_name);

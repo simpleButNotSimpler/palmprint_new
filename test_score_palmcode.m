@@ -15,7 +15,7 @@ figure, imshowpair(test_im, dbase_im)
 %% alignment
 test_canny = imread(fullfile('data\testimages\cleaned', path1));
 db_canny = imread(fullfile('data\database\cleaned', path2));
-new_im = imread(fullfile('data\testimages\raw_testimages', path1));
+orig_im = imread(fullfile('data\testimages\raw_testimages', path1));
 
 [angle, trans, cf, direction] = test_alignment_one(test_canny, db_canny);
 
@@ -23,7 +23,7 @@ if direction
    temp = test_im;
    test_im = dbase_im;
    dbase_im = temp;
-   new_im = imread(fullfile('data\database\raw_database', path2));
+   orig_im = imread(fullfile('data\database\raw_database', path2));
 end
 
 figure, imshowpair(test_canny, db_canny)
@@ -35,10 +35,10 @@ gray_db = imread(fullfile('data\database\raw_database', path2));
 figure, imshowpair(gray_test, gray_db)
 
 %% transformation info (use match_info.txt to get the transformation data)
-RA = imref2d(size(new_im));
+RA = imref2d(size(orig_im));
 
 % transform the image
-imt = imtranslate(new_im, RA, trans');
+imt = imtranslate(orig_im, RA, trans');
 % figure, imshowpair(imt, dbase_im)
 
 % rotation

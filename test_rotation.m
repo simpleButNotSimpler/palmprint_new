@@ -14,10 +14,11 @@ dbase_im = imread(fullfile(name, path2));
 %direction code images
 dc_test_im = imread(fullfile('data\testimages\direction_code', path1));
 dc_db_im = imread(fullfile('data\database\direction_code', path2));
+orig_im = imread(fullfile('data\testimages\raw', path1));
 
 figure, imshowpair(test_im, dbase_im)
 
-%%
+%% alignment
 [angle, trans, cf, direction] = test_alignment_one(test_im, dbase_im);
 
 if direction
@@ -28,6 +29,8 @@ if direction
    temp = dc_test_im;
    dc_test_im = dc_db_im;
    dc_db_im = temp;
+   
+   orig_im = imread(fullfile('data\database\raw', path2));
 end
 
 
@@ -36,10 +39,14 @@ RA = imref2d(size(test_im));
 imt = imtranslate(test_im, RA, trans');
 output = rotateAround(imt, cf(2), cf(1), angle);
 
-%% transform the direction-code images
-RA = imref2d(size(dc_test_im));
-dc_imt = imtranslate(dc_test_im, RA, trans');
+%% transform the original image
+RA = imref2d(size(orig_im));
+dc_imt = imtranslate(orig_im, RA, trans');
 dc_output = rotateAround(dc_imt, cf(2), cf(1), angle);
+
+%direction code
+[temp, ~] = edgeresponse(dc_output);
+[~, dc_output] = edgeresponse(imcomplement(temp));
 
 %crop the direction-code image
 [row, col, dc_cropped_output] = crop_rotation(dc_output);

@@ -31,8 +31,8 @@ parfor main_counter=1:100
        
        %classification
        %min indexes
-%        [~, dp_min_idx] = min(dp);
-       [~, al_min_idx] = min(al);
+       [~, dp_min_idx] = min(dp);
+%        [~, al_min_idx] = min(al);
        
        %verdicts
 %        idx = (dp_min_idx == main_counter);
@@ -47,9 +47,8 @@ parfor main_counter=1:100
           fid = fopen('mismatched_aligned.txt', 'a');
           fprintf(fid, '%10s %3d \n', current_im_name, al_min_idx(1));
           fclose(fid);
-       end      
-       
-       
+       end
+              
        total = total + 1;
     end
  end

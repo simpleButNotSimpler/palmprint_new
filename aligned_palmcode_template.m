@@ -1,4 +1,4 @@
-function score = aligned_palmcode(im_test_name, database)
+function score = aligned_palmcode_template(im_test_name, database)
 %take one cleaned image and one cleaned database as input, it outputs the minimum palmcode
 %difference between the im and the images in the database using alignement
 %and the minimum difference of their palmlines
@@ -76,19 +76,35 @@ end
 function score = rotated_im_scores(test_im_name, db_im_name, angle, trans, cf, direction)
 
 %actual code
+% cleaned_test_name = fullfile('data\testimages\cleaned', test_im_name);
+% cleaned_db_name = fullfile('data\database\cleaned', db_im_name);
 dc_test_name = fullfile('data\testimages\direction_code', test_im_name);
 dc_db_name = fullfile('data\database\direction_code', db_im_name);
 raw_test_name = fullfile('data\testimages\raw', test_im_name);
 
 if direction
-   dc_db_name = dc_test_name;
+%    temp = cleaned_test_name;
+%    cleaned_test_name = cleaned_db_name;
+%    cleaned_db_name = temp;
+   
+   temp = dc_test_name;
+   dc_test_name = dc_db_name;
+   dc_db_name = temp;
    raw_test_name = fullfile('data\database\raw', db_im_name);
 end
 
 
-
+% cleaned_test_im = read_image(cleaned_test_name);
+% cleaned_db_im = read_image(cleaned_db_name);
 raw_test_im = read_image(raw_test_name);
+% dc_test_im = read_image(dc_test_name);
 dc_db_im = read_image(dc_db_name);
+
+
+% transform the cleaned images
+% RA = imref2d(size(cleaned_test_im));
+% imt = imtranslate(cleaned_test_im, RA, trans');
+% cleaned_output_im = rotateAround(imt, cf(2), cf(1), angle);
 
 % transform the original image
 RA = imref2d(size(raw_test_im));
@@ -101,8 +117,32 @@ dc_output_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 %crop the direction-code image
 [row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
 dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));
+% cleaned_cropped_output_im = cleaned_output_im(row(1):row(2), col(1):col(2));
+% cleaned_cropped_db_im = cleaned_db_im(row(1):row(2), col(1):col(2));
 
+% scores
+%================= DIRECTION CODE IMAGE =======================
+% %score full rotated
+% dc_full_rot = palmcode_diff(dc_output_im, dc_db_im);
+% 
+% %score cropped rotated
 dc_cr_rot = palmcode_diff(dc_cropped_output_im, dc_cropped_db_im);
+% 
+% %score palmregion full rotated
+% dc_pr_full_rot = palmcode_diff_region_palm(dc_output_im, dc_db_im, cleaned_output_im, cleaned_db_im);
+% 
+% %score palmregion cropped rotated
+% dc_pr_cr_rot = palmcode_diff_region_palm(dc_cropped_output_im, dc_cropped_db_im, cleaned_cropped_output_im, cleaned_cropped_db_im);
+
+
+%================= CLEANED IMAGE =======================
+%score cleaned rotated
+% cl_rot = palmcode_diff_bw(cleaned_output_im, cleaned_db_im);
+
+%score palmregion rotated
+% cl_pr = palmcode_diff_bw_region_palm(cleaned_output_im, cleaned_db_im, cleaned_output_im, cleaned_db_im);
+
+% score = [dc_full_rot, dc_cr_rot, dc_pr_full_rot, dc_pr_cr_rot, cl_rot, cl_pr];
 
 score = dc_cr_rot;
 end

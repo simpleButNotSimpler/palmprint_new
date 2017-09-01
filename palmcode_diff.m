@@ -20,7 +20,10 @@ function score = palmcode_diff(im1, im2)
     histo_vector1 = code_image_histo(im1, blocks);
     histo_vector2 = code_image_histo(im2, blocks);
     
-    score = sum(abs(histo_vector1 - histo_vector2)) / bsize;
+    num_of_blocks = numel(blocks) - 1;
+    num_of_blocks = num_of_blocks*num_of_blocks;
+    
+    score = sum(abs(histo_vector1 - histo_vector2)) / num_of_blocks;
 end
 
 function histo_vector = code_image_histo(im, range)

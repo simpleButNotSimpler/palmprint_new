@@ -5,7 +5,7 @@ wrong_al = right_al;
 %parpool
 % parpool(4)
 
-parfor main_counter=1:100
+parfor main_counter=1:20
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -172,7 +172,7 @@ dc_output_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
 %crop the direction-code image
 % [row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
-row = [15 144];
+row = [15 114];
 col = [15 114];
 dc_cropped_output_im = dc_output_im(row(1):row(2), col(1):col(2));
 dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));

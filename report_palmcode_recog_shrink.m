@@ -1,6 +1,6 @@
 function report_palmcode_recog_shrink()
 total = 0;
-right_dp = zeros(1, 10);
+right_dp = zeros(1, 15);
 wrong_dp = right_dp;
 
 %parpool

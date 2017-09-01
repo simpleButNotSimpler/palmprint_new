@@ -9,33 +9,35 @@ function score = palmcode_diff(im1, im2)
         return
     end
     
-    histo_vector1 = code_image_histo(im1);
-    histo_vector2 = code_image_histo(im2);
+    bsize = 8;
+    blocks = 1:bsize:siz1(1)+1;
     
-    score = sum(abs(histo_vector1 - histo_vector2)) / sum(histo_vector1);
+    notfit = mod(siz1(1), 8);
+    if notfit
+        blocks = [blocks, siz1(1)];
+    end
+    
+    histo_vector1 = code_image_histo(im1, blocks);
+    histo_vector2 = code_image_histo(im2, blocks);
+    
+    score = sum(abs(histo_vector1 - histo_vector2)) / bsize;
 end
 
-function histo_vector = code_image_histo(im)
-   [limx, limy] = size(im);
-   row = 1;
-   histo_vector = [];
-   bsize = 15;
-   args = bsize+1;
+function histo_vector = code_image_histo(im, range)
+   histo_vector = [];   
+   len = numel(range) - 1;
    
-   while (limx >= row+bsize)
-       col = 1;
-       while (limy >= col+bsize)
-            block = im(row:row+bsize, col:col+bsize);
-            histo_vector = [histo_vector, code_block_histo(block, args, args)];
-            col = col+bsize+1;
-       end
-       
-       row = row+bsize+1;
+   for m=1:len
+       for n=len
+           block = im(range(m):range(m+1)-1, range(n):range(n+1)-1);
+           histo_vector = [histo_vector, code_block_histo(block)];
+       end       
    end
 end
 
-function hv = code_block_histo(im, row, col)
+function hv = code_block_histo(im)
    hv = zeros(1, 9);
+   [row, col] = size(im);
    
    for t=1:row
        for k=1:col
@@ -43,4 +45,6 @@ function hv = code_block_histo(im, row, col)
            hv(idx) =  hv(idx) + 1;
        end
    end
+   
+   hv = hv / sum(hv);
 end

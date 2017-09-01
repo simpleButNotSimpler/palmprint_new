@@ -7,7 +7,7 @@ dc_test_im_orig = read_image(fullfile('data\testimages\direction_code', im_test_
 
 % cleaned_orig_min = inf;
 score = [];
-shrink_array = [1 2 4 6 8 10 12 14 16 18];
+shrink_array = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15];
 
 for t=1:10
     shrink = shrink_array(t);

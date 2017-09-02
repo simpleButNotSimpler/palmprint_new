@@ -12,7 +12,11 @@ for counter=1:numel(database)
     im_db = read_image(fullfile(folder, database(counter).name));
     
     %align the two current images
-    [angle, trans, cf, direction, ~] = test_alignment_one(im_test, im_db);
+    try
+        [angle, trans, cf, direction, ~] = test_alignment_one(im_test, im_db);
+    catch
+        cf = 0;
+    end
     
     %get the best results
     if cf == 0
@@ -102,7 +106,7 @@ dc_output_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 [row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
 dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));
 
-dc_cr_rot = palmcode_diff(dc_cropped_output_im, dc_cropped_db_im);
+dc_cr_rot = palmcode_diff_prime(dc_cropped_output_im, dc_cropped_db_im);
 
 score = dc_cr_rot;
 end

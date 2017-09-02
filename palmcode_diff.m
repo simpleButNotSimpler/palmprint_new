@@ -9,7 +9,7 @@ function score = palmcode_diff(im1, im2)
         return
     end
     
-    bsize = floor(siz1(1)/4);
+    bsize = floor(siz1(1)/7);
     blocks = 1:bsize:siz1(1)+1;
     blocks(end) = siz1(1)+1;
     

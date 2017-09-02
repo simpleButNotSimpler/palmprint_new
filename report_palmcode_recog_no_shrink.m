@@ -1,12 +1,12 @@
-function report_palmcode_recog_shrink()
+function report_palmcode_recog_no_shrink()
 total = 0;
-right_dp = zeros(1, 1);
+right_dp = zeros(1, 2);
 wrong_dp = right_dp;
 
 %parpool
 % parpool(4)
-tic
-parfor main_counter=1:500
+
+parfor main_counter=1:20
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -44,9 +44,9 @@ parfor main_counter=1:500
        total = total + 1;
     end
  end
-toc
+
 %write result to file
-fid = fopen('report_palmcode_dp_shrink.txt', 'w');
+fid = fopen('recog_palmcode_dp_shrink.txt', 'w');
 fprintf(fid, '%s\n', 'DP');
 fprintf(fid, '%4d %4d\n', [right_dp; wrong_dp]);
 fclose(fid);
@@ -61,13 +61,13 @@ function [dp] = report_score(im_test_name)
    
    %test the image against all the database
    folder_dc = 'data\database\direction_code';
-   dp = zeros(500, 1) + inf;
+   dp = zeros(250, 2) + inf;
    
-   for t=1:500
+   for t=1:250
        db_name = strcat('db', num2str(t),'_*.bmp');
        database_dc = dir(fullfile(folder_dc, db_name));
        
        %get the score form direct palmcode
-       dp(t, :) = direct_palmcode_shrink(im_test_name, database_dc);
+       dp(t,:) = direct_palmcode(im_test_name, database_dc);
    end
 end

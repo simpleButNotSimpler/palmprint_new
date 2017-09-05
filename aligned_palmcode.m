@@ -83,15 +83,19 @@ function score = rotated_im_scores(test_im_name, db_im_name, angle, trans, cf, d
 dc_test_name = fullfile('data\testimages\direction_code', test_im_name);
 dc_db_name = fullfile('data\database\direction_code', db_im_name);
 raw_test_name = fullfile('data\testimages\raw', test_im_name);
+raw_db_name = fullfile('data\database\raw', db_im_name);
 
 if direction
    dc_db_name = dc_test_name;
-   raw_test_name = fullfile('data\database\raw', db_im_name);
+   
+   temp = raw_test_name;
+   raw_test_name = raw_db_name;
+   raw_db_name = temp;
 end
 
 
-
 raw_test_im = im2double(read_image(raw_test_name));
+raw_db_im = im2double(read_image(raw_db_name));
 dc_db_im = read_image(dc_db_name);
 
 % transform the original image
@@ -99,7 +103,7 @@ RA = imref2d(size(raw_test_im));
 dc_imt = imtranslate(raw_test_im, RA, trans');
 raw_rotated_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
-restored_raw_im = restore_im(raw_rotated_im, raw_test_im);
+[restored_raw_im, non_palm_region] = restore_im(raw_rotated_im, raw_db_im);
 
 [temp, ~] = edgeresponse(restored_raw_im);
 [~, dc_output_im] = edgeresponse(imcomplement(temp));
@@ -109,5 +113,8 @@ restored_raw_im = restore_im(raw_rotated_im, raw_test_im);
 % dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));
 
 % score = palmcode_diff(dc_cropped_output_im, dc_cropped_db_im);
+dc_output_im(non_palm_region) = 180;
+dc_db_im(non_palm_region) = 180;
+
 score = palmcode_diff(dc_output_im, dc_db_im);
 end

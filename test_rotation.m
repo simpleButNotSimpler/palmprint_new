@@ -56,11 +56,12 @@ RA = imref2d(size(orig_test_im));
 dc_imt = imtranslate(orig_test_im, RA, trans');
 orig_rotated_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
-restored_orig_im = restore_im(orig_rotated_im, orig_test_im); %restore the image
+[restored_orig_im, non_palm_region] = restore_im(orig_rotated_im, orig_db_im); % restore the image
 
 %direction code
 [temp, ~] = edgeresponse(restored_orig_im);
 [~, dc_output_im] = edgeresponse(imcomplement(temp));
+dc_output_im(non_palm_region) = 180;
 
 %crop the direction-code image
 % [row, col, dc_cropped_output] = crop_rotation(dc_output_im);
@@ -85,6 +86,7 @@ original = palmcode_diff(dc_test_im, dc_db_im)
 % cropped_rotated = palmcode_diff(dc_cropped_output, dc_cropped_db_im)
 
 %score cropped rotated
+dc_db_im(non_palm_region) = 180;
 restored_score = palmcode_diff(dc_output_im, dc_db_im)
 
 % %score palmregion rotated

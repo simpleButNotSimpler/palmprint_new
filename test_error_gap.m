@@ -6,7 +6,7 @@ wrong_al = right_al;
 % parpool(4)
 
 tic
-parfor main_counter=1:5
+for main_counter=4:11
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -42,10 +42,11 @@ parfor main_counter=1:5
           fid = fopen('mismatched_palmcode_recog_al.txt', 'a');
           fprintf(fid, '%10s %3d \n', current_im_name, al_min_idx(1));
           fclose(fid);
-       end       
+       end
     end
  end
 toc
+
 %write result to file
 fid = fopen('report_palmcode_recog_al.txt', 'w');
 fprintf(fid, '%s\n', 'AL');
@@ -182,10 +183,11 @@ RA = imref2d(size(raw_test_im));
 dc_imt = imtranslate(raw_test_im, RA, trans');
 raw_rotated_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
-restored_raw_im = restore_im(raw_rotated_im, raw_test_im);
+[restored_raw_im, non_palm_region] = restore_im(raw_rotated_im, raw_db_im);
 
 [temp, ~] = edgeresponse(restored_raw_im);
 [~, dc_output_im] = edgeresponse(imcomplement(temp));
+dc_output_im(non_palm_region) = 180;
 
 %crop the direction-code image
 % [row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
@@ -201,6 +203,7 @@ restored_raw_im = restore_im(raw_rotated_im, raw_test_im);
 % 
 % [temp, ~] = edgeresponse(dc_cropped_db_im);
 % [~, dc_cropped_db_im] = edgeresponse(imcomplement(temp));
+dc_db_im(non_palm_region) = 180;
 score = palmcode_diff(dc_output_im, dc_db_im);
 %=======================
 

@@ -56,7 +56,6 @@ winopen('report_palmcode_recog_al.txt')
 disp('nou fini')
 end
 
-
 function [al] = report_score(im_test_name)
    %image
    

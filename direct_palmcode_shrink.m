@@ -23,7 +23,7 @@ for t=1:1
         dc_db_im = dc_db_im(shrink:end-(shrink-1), shrink:end-(shrink-1));
 
         %the scores
-        score_dc_orig = palmcode_diff(dc_test_im, dc_db_im);
+        score_dc_orig = palmcode_angular_diff(dc_test_im, dc_db_im);
 
         %update global minimum
         if score_dc_orig < dc_orig_min

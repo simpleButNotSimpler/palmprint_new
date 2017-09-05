@@ -1,6 +1,8 @@
 function [angle, trans, cf, direction] = test_alignment_one(moving_im, database)
 cf = 0;
 direction = 0;
+angle = 0;
+trans = [0;0];
 
     % get the image image for one person
     fixed_im = database;

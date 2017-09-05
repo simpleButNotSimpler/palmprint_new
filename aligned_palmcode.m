@@ -91,22 +91,23 @@ end
 
 
 
-raw_test_im = read_image(raw_test_name);
+raw_test_im = im2double(read_image(raw_test_name));
 dc_db_im = read_image(dc_db_name);
 
 % transform the original image
 RA = imref2d(size(raw_test_im));
 dc_imt = imtranslate(raw_test_im, RA, trans');
-dc_output_im = rotateAround(dc_imt, cf(2), cf(1), angle);
+raw_rotated_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
-[temp, ~] = edgeresponse(dc_output_im);
+restored_raw_im = restore_im(raw_rotated_im, raw_test_im);
+
+[temp, ~] = edgeresponse(restored_raw_im);
 [~, dc_output_im] = edgeresponse(imcomplement(temp));
 
 %crop the direction-code image
-[row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
-dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));
+% [row, col, dc_cropped_output_im] = crop_rotation(dc_output_im);
+% dc_cropped_db_im = dc_db_im(row(1):row(2), col(1):col(2));
 
-dc_cr_rot = palmcode_diff_prime(dc_cropped_output_im, dc_cropped_db_im);
-
-score = dc_cr_rot;
+% score = palmcode_diff(dc_cropped_output_im, dc_cropped_db_im);
+score = palmcode_diff(dc_output_im, dc_db_im);
 end

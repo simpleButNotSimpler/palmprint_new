@@ -6,7 +6,7 @@ wrong_dp = right_dp;
 %parpool
 % parpool(4)
 tic
-parfor main_counter=1:500
+parfor main_counter=1:50
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -25,6 +25,9 @@ parfor main_counter=1:500
         
        %get class (1xN array), same size as error
        [dp] = report_score(current_im_name);
+       
+       %plot error
+%        plot(1:numel(dp), dp, 'r*')
        
        %classification
        %min indexes
@@ -52,6 +55,7 @@ fprintf(fid, '%4d %4d\n', [right_dp; wrong_dp]);
 fclose(fid);
 
 % delete(gcp('nocreate'))
+winopen('report_palmcode_dp_shrink.txt')
 disp('nou fini')
 end
 
@@ -61,9 +65,9 @@ function [dp] = report_score(im_test_name)
    
    %test the image against all the database
    folder_dc = 'data\database\direction_code';
-   dp = zeros(500, 1) + inf;
+   dp = zeros(100, 1) + inf;
    
-   for t=1:500
+   for t=1:100
        db_name = strcat('db', num2str(t),'_*.bmp');
        database_dc = dir(fullfile(folder_dc, db_name));
        

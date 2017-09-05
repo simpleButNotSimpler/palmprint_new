@@ -5,7 +5,7 @@ wrong_al = right_al;
 %parpool
 % parpool(4)
 
-parfor main_counter=1:20
+parfor main_counter=1:10
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     
@@ -29,6 +29,8 @@ parfor main_counter=1:20
        %min indexes
        [~, al_min_idx] = min(al);
        
+%        plot(1:numel(al), al, 'r*')
+       
        %verdicts
        idx = (al_min_idx == main_counter);
        right_al = right_al + idx;
@@ -50,6 +52,7 @@ fprintf(fid, '%4d %4d\n', [right_al; wrong_al]);
 fclose(fid);
 
 % delete(gcp('nocreate'))
+winopen('report_palmcode_recog_al.txt')
 disp('nou fini')
 end
 

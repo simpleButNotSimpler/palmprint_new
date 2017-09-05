@@ -1,4 +1,4 @@
-function score = palmcode_diff(im1, im2)
+function score = palmcode_diff_whole(im1, im2)
 %take two palmcode as input and output the difference of their histogram
 
     siz1 = size(im1);
@@ -9,15 +9,14 @@ function score = palmcode_diff(im1, im2)
         return
     end
     
-    bsize = floor(siz1(1)/7);
+    bsize = floor(siz1(1)/4);
     blocks = 1:bsize:siz1(1)+1;
     blocks(end) = siz1(1)+1;
     
     histo_vector1 = code_image_histo(im1, blocks);
     histo_vector2 = code_image_histo(im2, blocks);
     
-%     score = sum(abs(histo_vector1 - histo_vector2)) / (siz1(1)*siz1(2));
-    score = sum(abs(histo_vector1 - histo_vector2)) / (128*128);
+    score = sum(abs(histo_vector1 - histo_vector2)) / (siz1(1)*siz1(2));
 end
 
 function histo_vector = code_image_histo(im, range)

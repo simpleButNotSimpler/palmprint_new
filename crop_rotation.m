@@ -13,12 +13,17 @@ function [row, col, im_out] = crop_rotation(gray_im)
     col_start = center;
     col_end = center;
     
+    if ~mod(row, 2)
+        row_end = center+1;
+        col_end = center+1;
+    end
+    
     stop = 0;
     while 1
-        row_start = row_start - 1;
-        row_end = row_end + 1;
-        col_start = col_start - 1;
-        col_end = col_end + 1;
+        row_start = row_start-1;
+        row_end = row_end+1;
+        col_start = col_start-1;
+        col_end = col_end+1;
         
         try
             temp = bw_im(row_start:row_end, col_start:col_end);

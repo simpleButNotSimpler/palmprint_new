@@ -1,14 +1,7 @@
 function score = palmcode_diff_weights_fused(im1, im2, palm_im1, palm_im2)
 %take two palmcode and two cannys as input and output the difference of their histogram
-
-    siz1 = size(im1);
-    siz2 = size(im2);
-    if ~all(siz1 == siz2)
-        disp('error: image size should be the same!')
-        score = [];
-        return
-    end
     
+    siz1 = size(im1);
     bsize = floor(siz1(1)/7);
     blocks = 1:bsize:siz1(1)+1;
     blocks(end) = siz1(1)+1;
@@ -16,7 +9,7 @@ function score = palmcode_diff_weights_fused(im1, im2, palm_im1, palm_im2)
     %fuse the palm images
     palm_im1(palm_im2 > 0) = 255;
     
-    weights = ones(size(im1));
+    weights = ones(siz1);
     weights(palm_im1 > 0) = 2;
     score = histo_diff(im1, im2, weights, blocks);
 end

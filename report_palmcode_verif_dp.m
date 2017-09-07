@@ -7,10 +7,9 @@ n4 = n1;
 total_pos = 0;
 total_neg = 0;
 
-idx = 1:13;
 error = [0.2 0.25 0.27 0.29 0.3 0.32 0.34 0.4 0.5 0.6 0.7 0.8 0.9];
 
-for main_counter=1:500    
+parfor main_counter=1:10    
     disp(num2str(main_counter))
     db_prefix = strcat('db', num2str(main_counter));
     im_prefix = strcat('p', num2str(main_counter));
@@ -24,11 +23,11 @@ for main_counter=1:500
     for sc=1:numel(scores)
         %score = floor(scores(sc)*10);
         score = scores(sc);
-        idx_n1 = idx(score <= error);
-        idx_n2 = idx(score > error);
+        idx_n1 = score <= error;
+        idx_n2 = score > error;
         
-        n1(idx_n1) = n1(idx_n1) + 1;
-        n2(idx_n2) = n2(idx_n2) + 1;
+        n1 = n1 + idx_n1;
+        n2 = n2 + idx_n2;
     end
     
     total_pos = total_pos + numel(scores);
@@ -48,17 +47,16 @@ for main_counter=1:500
        for sc=1:numel(scores)
            %score = floor(scores(sc)*10);
            score = scores(sc);
-           idx_n3 = idx(score <= error);
-           idx_n4 = idx(score > error);
+           idx_n3 = score <= error;
+           idx_n4 = score > error;
 
-           n3(idx_n3) = n3(idx_n3) + 1;
-           n4(idx_n4) = n4(idx_n4) + 1;
+           n3 = n3 + idx_n3;
+           n4 = n4 + idx_n4;
        end
        
        total_neg = total_neg + numel(scores);
     end
 end
-
 
 %write result to file
 output = [n1; n2; n3; n4];
@@ -69,6 +67,7 @@ fprintf(fid, '\n\n%10s %4d \n%10s %4d\n', 'Total_pos = ', total_pos, 'Total_neg 
 fclose(fid);
 
 disp('nou fini')
+winopen('report_palmcode_without_al.txt')
 end
 
 
@@ -99,7 +98,7 @@ winner_idx = 1;
 
 gloabl_min = inf;
 
-dc_test_im = imread(fullfile('data\testimages\direction_code', test_im_name));
+dc_test_im = read_image(fullfile('data\testimages\direction_code', test_im_name));
 canny_test_im = read_image(fullfile('data\testimages\canny', test_im_name));
 if isempty(find(dc_test_im, 1))
    return
@@ -107,7 +106,7 @@ end
 
 for counter=1:db_len
     % get the image image for one person
-    dc_db_im = imread(fullfile(database(counter).folder, database(counter).name));
+    dc_db_im = read_image(fullfile(database(counter).folder, database(counter).name));
     canny_db_im = read_image(fullfile('data\database\canny', database(counter).name));
     
     if isempty(find(dc_db_im, 1))

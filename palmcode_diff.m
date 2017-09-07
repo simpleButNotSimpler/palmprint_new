@@ -9,9 +9,10 @@ function score = palmcode_diff(im1, im2)
         return
     end
     
-    idx = find(im1 == 180);
-    non_palm_region = numel(idx);
-    fac = (siz1(1)*siz1(2)) - non_palm_region;
+%     idx = find(im1 == 180);
+%     non_palm_region = numel(idx);
+%     fac = (siz1(1)*siz1(2)) - non_palm_region;
+    fac = 128*128;
     
     bsize = floor(siz1(1)/7);
     blocks = 1:bsize:siz1(1)+1;

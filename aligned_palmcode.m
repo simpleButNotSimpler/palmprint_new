@@ -114,7 +114,7 @@ raw_rotated_im = rotateAround(dc_imt, cf(2), cf(1), angle);
 
 % score = palmcode_diff(dc_cropped_output_im, dc_cropped_db_im);
 dc_output_im(non_palm_region) = 180;
-dc_db_im(non_palm_region) = 180;
+% dc_db_im(non_palm_region) = 180;
 
 score = palmcode_diff(dc_output_im, dc_db_im);
 end

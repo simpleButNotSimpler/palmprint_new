@@ -33,6 +33,7 @@ function histo_vector = code_image_histo(im, im_witness)
    bsize = 31;
    args = bsize+1;
    
+   
    while (limx >= row+bsize)
        col = 1;
        while (limy >= col+bsize)

@@ -5,7 +5,7 @@ wrong_al = right_al;
 %parpool
 % parpool(4)
 
-parfor main_counter=1:10
+parfor main_counter=31:50
     disp(num2str(main_counter))
     im_prefix = strcat('p', num2str(main_counter), '_*.bmp');
     

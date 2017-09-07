@@ -40,6 +40,4 @@ trans = [0;0];
          angle = angle2;
          trans = T2;
      end
-
-
 end

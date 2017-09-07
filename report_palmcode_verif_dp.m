@@ -9,7 +9,7 @@ total_neg = 0;
 
 error = [0.2 0.25 0.27 0.29 0.3 0.32 0.34 0.4 0.5 0.6 0.7 0.8 0.9];
 
-parfor main_counter=1:10    
+for main_counter=1:10    
     disp(num2str(main_counter))
     db_prefix = strcat('db', num2str(main_counter));
     im_prefix = strcat('p', num2str(main_counter));

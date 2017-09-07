@@ -21,13 +21,13 @@ for main_counter=1:500
     end
     
     %recognition
-    for t=1:numel(testim)
+    for t=5:numel(testim)
        current_im_name = testim(t).name;
         
        %get class (1xN array), same size as error
        [dp] = report_score(current_im_name);
        
-       plot(1:numel(dp), dp, 'r*')
+%        plot(1:numel(dp), dp, 'r*')
        
        %classification
        %min indexes

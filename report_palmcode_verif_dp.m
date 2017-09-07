@@ -1,37 +1,24 @@
-function report_palmcode_score_without_al()
+function report_palmcode_verif_dp()
 
-n1 = zeros(1, 8);
+n1 = zeros(1, 13);
 n2 = n1;
 n3 = n1;
 n4 = n1;
 total_pos = 0;
 total_neg = 0;
 
-idx = 1:8;
-error = [0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9];
+idx = 1:13;
+error = [0.2 0.25 0.27 0.29 0.3 0.32 0.34 0.4 0.5 0.6 0.7 0.8 0.9];
 
-for main_counter=1:185    
+for main_counter=1:500    
     disp(num2str(main_counter))
     db_prefix = strcat('db', num2str(main_counter));
-    im_prefix = strcat('p', num2str(main_counter));    
-    
-    touti = dir(strcat('data\testimages\cleaned\', im_prefix, '_*.bmp'));
-    if isempty(touti)
-       continue
-    end
+    im_prefix = strcat('p', num2str(main_counter));
     
     database = dir(strcat('data\database\direction_code\', db_prefix, '_*.bmp'));
     testim = dir(strcat('data\testimages\direction_code\', im_prefix, '_*.bmp'));
-    if isempty(database) || isempty(testim)
-       continue
-    end
-    
-    if numel(testim) ~= 5
-        disp('nou la')
-    end
     
     %positive
-    error = [0.2 0.34 0.4 0.5 0.6 0.7 0.8 0.9];
     scores = report_score(testim, database);
     
     for sc=1:numel(scores)
@@ -42,33 +29,19 @@ for main_counter=1:185
         
         n1(idx_n1) = n1(idx_n1) + 1;
         n2(idx_n2) = n2(idx_n2) + 1;
-        
-        if score >= 0.8
-            disp(testim(sc).name)
-        end
     end
     
     total_pos = total_pos + numel(scores);
     
     %negative
-    error = [0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9];
-    for t=1:185
+    for t=1:500
        if t == main_counter
           continue
-       end
-       
-       touti = dir(strcat('data\testimages\cleaned\', im_prefix, '_*.bmp'));
-       if isempty(touti)
-          continue
-       end
-       
+       end       
        
        %load the two sets
        db_prefix = strcat('db', num2str(t));
        database = dir(strcat('data\database\direction_code\', db_prefix, '_*.bmp'));
-       if isempty(database)
-          continue
-       end
        
        %get score
        scores = report_score(testim, database);
@@ -105,13 +78,8 @@ function score = report_score(testimage, database)
    score = zeros(1, im_len);
    idx = [];
    
-   for t=1:im_len    
-       test_im = imread(fullfile(testimage(t).folder, testimage(t).name));
-       if isempty(find(test_im, 1))
-           continue
-       end
-       
-       [~, gloabl_min, witness] = build_alignment_one(test_im, database);
+   for t=1:im_len
+       [~, gloabl_min, witness] = build_alignment_one(testimage(t).name, database);
        if ~witness
           idx = [idx, t];
           continue
@@ -124,29 +92,38 @@ function score = report_score(testimage, database)
    score(idx) = [];
 end
 
-function [winner_idx, gloabl_min, witness] = build_alignment_one(moving_im, database)
+function [winner_idx, gloabl_min, witness] = build_alignment_one(test_im_name, database)
 db_len = length(database);
 witness = 0;
 winner_idx = 1;
 
 gloabl_min = inf;
 
+dc_test_im = imread(fullfile('data\testimages\direction_code', test_im_name));
+canny_test_im = read_image(fullfile('data\testimages\canny', test_im_name));
+if isempty(find(dc_test_im, 1))
+   return
+end
+
 for counter=1:db_len
     % get the image image for one person
-    fixed_im = imread(fullfile(database(counter).folder, database(counter).name));
+    dc_db_im = imread(fullfile(database(counter).folder, database(counter).name));
+    canny_db_im = read_image(fullfile('data\database\canny', database(counter).name));
     
-    if isempty(find(fixed_im, 1))
+    if isempty(find(dc_db_im, 1))
         continue
     end
     
     witness = 1;
     
-    score = palm_histo_score(moving_im, fixed_im);
+    
+    score = palmcode_diff_weights_fused(dc_test_im, dc_db_im, canny_test_im, canny_db_im);
+%     score = palm_histo_score(moving_im, fixed_im);
     %global_min
     if score < gloabl_min
         winner_idx = counter;
         gloabl_min = score;
-    end 
+    end
 end
 
 end
